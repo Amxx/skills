@@ -1,5 +1,12 @@
 # Journal des versions
 
+## 1.3.1 — 19/09/2026
+
+- **Les scores du calque passent à la couleur de leur série** — le rouge des impacts sur le
+  chemin nominal. Ils suivaient la couleur de texte du thème, donc en thème clair ils
+  s'écrivaient en sombre sur le noir du visuel : au 10 m, là où tombent presque tous les
+  impacts. Le score est une couleur physique comme l'impact qu'il annote, pas du texte.
+
 ## 1.3.0 — 19/09/2026
 
 Les résultats s'affichent dans la conversation au lieu d'être livrés en fichier. Le moteur

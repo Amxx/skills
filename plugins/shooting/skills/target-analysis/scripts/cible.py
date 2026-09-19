@@ -457,10 +457,11 @@ def svg(etat_path, out=None, mode="derniere"):
     """Calque vectoriel destine au rendu INLINE dans la conversation, pas a un fichier
        image. Sort un <svg> autonome : espace de noms declare (il s'ouvre donc aussi
        tel quel dans un navigateur), viewBox 680 de large, fond transparent, traits
-       d'anneaux en var(--b) et texte en class ts pour suivre le theme clair/sombre,
+       d'anneaux en var(--b) et legende en class ts pour suivre le theme clair/sombre,
        chaque var() doublee d'un repli en dur pour le rendu hors conversation.
-       Le noir du visuel et les impacts restent en dur : ce sont des couleurs physiques,
-       elles ne doivent pas s'inverser en mode sombre.
+       Le noir du visuel, les impacts et les scores restent en dur : ce sont des couleurs
+       physiques, elles ne doivent pas s'inverser en mode sombre. Le score prend la couleur
+       de sa serie, seule lisible aussi bien sur le noir du visuel que sur le beige.
        mode derniere = la serie courante en plein, les precedentes en cercles gris.
        mode toutes   = une couleur par serie, pour le recapitulatif de fin de seance."""
     from xml.sax.saxutils import escape as esc
@@ -490,8 +491,8 @@ def svg(etat_path, out=None, mode="derniere"):
             a, b = px(imp["x"], imp["y"])
             if plein:
                 L.append('<circle cx="%.1f" cy="%.1f" r="%.1f" fill="%s"/>' % (a, b, rp, col))
-                L.append('<text class="ts" font-size="11" fill="var(--t, #444444)" x="%.1f" y="%.1f">%s</text>'
-                         % (a+rp+2, b-rp-1, esc(str(imp.get("score", "")))))
+                L.append('<text font-size="11" fill="%s" x="%.1f" y="%.1f">%s</text>'
+                         % (col, a+rp+2, b-rp-1, esc(str(imp.get("score", "")))))
             else:
                 gris = mode != "toutes"
                 L.append('<circle cx="%.1f" cy="%.1f" r="%.1f" fill="none" stroke="%s" '
