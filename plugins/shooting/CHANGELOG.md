@@ -1,5 +1,16 @@
 # Journal des versions
 
+## 1.2.1 — 19/09/2026
+
+Correction de fiche : le moteur ne bouge pas, les chiffres de détection de la 1.1.0 non plus.
+
+- **La sortie d'`analyse` va dans un fichier.** La fiche donnait la commande sans dire quoi
+  faire de son JSON — plusieurs centaines de lignes, qu'une lecture à travers `head` ou `tail`
+  tronque et perd, imposant un recalcul complet de 40 à 60 s. La commande redirige désormais
+  vers `~/tir/analyse.json`, relu ensuite champ par champ, contrôles d'abord.
+- **`mkdir -p ~/tir/vue` avant l'appel.** Ni la redirection ni `planche.png` ne créent leur
+  dossier : sur un conteneur neuf, le premier appel de la séance échouait.
+
 ## 1.2.0 — 19/09/2026
 
 Rien ne change à la lecture des cartons : les chiffres de la 1.1.0 tiennent toujours.

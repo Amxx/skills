@@ -84,10 +84,13 @@ là — ne pas reconstruire le script depuis la conversation.
 ### 1. Un seul appel fait tout le calcul
 
 ```bash
-python3 <CIBLE> analyse <photo> ~/tir/etat.json ~/tir/vue
+mkdir -p ~/tir/vue
+python3 <CIBLE> analyse <photo> ~/tir/etat.json ~/tir/vue > ~/tir/analyse.json
 ```
 
 Il enchaîne, sans aucun aller-retour : calage géométrique → détection des trous dans les trois polarités → décomposition des amas → recalage sur les anciens impacts → appariement → score → `planche.png`. Compter 40 à 60 s de calcul ; c'est normal, ne pas relancer.
+
+**La sortie va dans un fichier, jamais dans un `head` ou un `tail` qui la tronque** : le JSON fait plusieurs centaines de lignes, et tronqué il est perdu — le récupérer coûte le recalcul complet. Lire ensuite `~/tir/analyse.json`, les champs de contrôle du tableau ci-dessous d'abord, `nouveaux` en dernier ; en extraire un seul (`jq`, `python3 -c`) coûte moins cher que relire tout le fichier.
 
 Passer `-` à la place de `etat.json` pour un carton neuf.
 
