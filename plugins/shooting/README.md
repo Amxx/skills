@@ -1,6 +1,7 @@
-# tir — analyse de carton de tir
+# shooting — tir sportif
 
-Skill Claude qui lit une photo de carton de tir (ISSF 10 m / 25 m / 50 m), distingue
+Plugin Claude pour le tir sportif. Il contient aujourd'hui une skill,
+`target-analysis`, qui lit une photo de carton de tir (ISSF 10 m / 25 m / 50 m), distingue
 les nouveaux impacts des anciens, score la série, mesure le groupement et suit la séance.
 
 Le tireur envoie **une photo et rien d'autre**. Tout le reste est déduit : type de cible,
@@ -19,34 +20,37 @@ Le tireur envoie **une photo et rien d'autre**. Tout le reste est déduit : type
 **claude.ai / application de bureau**
 
 ```bash
-./scripts/build.sh          # produit tir.skill
+./scripts/build.sh          # produit shooting.skill
 ```
 
-Puis : photo de profil → Paramètres → Capacités → Compétences → importer `tir.skill`.
-Le `name: tir` du frontmatter est inchangé, donc un réimport remplace la version existante.
+Puis, dans un navigateur : Réglages → Capabilities → activer « Code execution and file
+creation », puis Customize → Skills → « + » → « + Create skill » → « Upload a skill ».
+L'import attend l'extension `.zip` : les releases publient `shooting.zip` à côté de
+`shooting.skill`, c'est le même fichier. Tant que `name: target-analysis` ne change pas,
+un réimport remplace la version existante au lieu d'en créer une seconde.
 
 **Claude Code — plugin (recommandé)**
 
 ```bash
 /plugin marketplace add Amxx/skills
-/plugin install tir@amxx
+/plugin install shooting@amxx
 ```
 
-La skill est alors découverte automatiquement, et `/plugin update tir@amxx` suffit ensuite.
+La skill est alors découverte automatiquement, et `/plugin update shooting@amxx` suffit ensuite.
 Sans passer par le marketplace, une copie manuelle fait la même chose :
 
 ```bash
-cp -r skills/tir ~/.claude/skills/tir      # global
-cp -r skills/tir .claude/skills/tir        # ou limité à un projet
+cp -r skills/target-analysis ~/.claude/skills/      # global
+cp -r skills/target-analysis .claude/skills/        # ou limité à un projet
 ```
 
-**API Claude** — le dossier `skills/tir/` est un bundle de skill standard, uploadable tel
-quel sur `/v1/skills`.
+**API Claude** — le dossier `skills/target-analysis/` est un bundle de skill standard,
+uploadable tel quel sur `/v1/skills`.
 
 ## Utilisation
 
-Envoyer une photo du carton. La skill se déclenche seule ; `/tir` la force.
-Préférences en tête de `skills/tir/SKILL.md` : main du tireur, discipline par défaut,
+Envoyer une photo du carton. La skill se déclenche seule ; `/target-analysis` la force.
+Préférences en tête de `skills/target-analysis/SKILL.md` : main du tireur, discipline par défaut,
 unité de groupement, valeur d'un clic de hausse, nombre de coups par série.
 
 ## Fiabilité mesurée
@@ -78,18 +82,18 @@ d'elle-même les impacts à cheval sur une ligne d'anneau.
 
 La skill tient en deux fichiers, chacun source unique de son côté :
 
-- `skills/tir/SKILL.md` — la procédure, ce que Claude lit ;
-- `skills/tir/scripts/cible.py` — le moteur, livré tel quel et exécuté depuis le dossier
+- `skills/target-analysis/SKILL.md` — la procédure, ce que Claude lit ;
+- `skills/target-analysis/scripts/cible.py` — le moteur, livré tel quel et exécuté depuis le dossier
   de la skill. Il n'est jamais transcrit ni recopié : rien ne peut donc diverger, et la
   fiche reste courte au lieu de traîner 500 lignes de Python dans le contexte.
 
 ```bash
 ./scripts/verify.py          # manifestes, frontmatter, syntaxe de cible.py, commandes
 ./scripts/smoke.py           # cible.py s'importe vraiment et expose ses quatre commandes
-./scripts/build.sh           # vérifie puis produit tir.skill
+./scripts/build.sh           # vérifie puis produit shooting.skill
 ```
 
-`tir.skill` est un artefact : il n'est pas versionné, `build.sh` le reconstruit.
+`shooting.skill` est un artefact : il n'est pas versionné, `build.sh` le reconstruit.
 
 Pour rejouer la validation, déposer des photos de cartons dans `tests/cartons/`
 et voir `tests/README.md`.

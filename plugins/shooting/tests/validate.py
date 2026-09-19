@@ -4,7 +4,7 @@
 import json, math, pathlib, subprocess, sys, time
 
 root = pathlib.Path(__file__).resolve().parent.parent
-engine = root / "skills" / "tir" / "scripts" / "cible.py"
+engine = root / "skills" / "target-analysis" / "scripts" / "cible.py"
 truth = json.loads((root / "tests" / "verite.json").read_text(encoding="utf-8"))
 out = root / "tests" / "sortie"; out.mkdir(exist_ok=True)
 state_path = out / "etat.json"

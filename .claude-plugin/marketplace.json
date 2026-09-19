@@ -6,9 +6,9 @@
   },
   "plugins": [
     {
-      "name": "tir",
-      "source": "./plugins/tir",
-      "description": "Analyse une photo de carton de tir (ISSF 10 m / 25 m / 50 m) : distingue les nouveaux impacts des anciens, score la serie, mesure le groupement et suit la seance."
+      "name": "shooting",
+      "source": "./plugins/shooting",
+      "description": "Outils pour le tir sportif. Aujourd'hui : l'analyse d'une photo de carton (ISSF 10 m / 25 m / 50 m) — nouveaux impacts, score, groupement, suivi de seance."
     }
   ]
 }

@@ -7,7 +7,7 @@ import importlib.util, pathlib, sys
 sys.dont_write_bytecode = True   # no __pycache__ next to the skill
 
 root = pathlib.Path(__file__).resolve().parent.parent
-engine = root / "skills" / "tir" / "scripts" / "cible.py"
+engine = root / "skills" / "target-analysis" / "scripts" / "cible.py"
 
 spec = importlib.util.spec_from_file_location("cible", engine)
 module = importlib.util.module_from_spec(spec)

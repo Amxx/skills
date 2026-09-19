@@ -1,5 +1,5 @@
 ---
-name: tir
+name: target-analysis
 description: "Analyse une photo de cible de tir (ISSF 10m/25m/50m) : distingue les nouveaux impacts des anciens, score la série, mesure le groupement et suit la séance. Dès qu'une photo de cible ou de carton est envoyée."
 ---
 
@@ -74,7 +74,7 @@ Repérer son chemin absolu **une fois** en début de séance, et le réutiliser 
 — les variables shell ne survivent pas d'un appel à l'autre. Il est noté `CIBLE` ci-dessous.
 
 ```bash
-ls "$CLAUDE_PLUGIN_ROOT/skills/tir/scripts/cible.py"   # Claude Code, installé en plugin
+ls "$CLAUDE_PLUGIN_ROOT/skills/target-analysis/scripts/cible.py"   # Claude Code, installé en plugin
 ```
 
 Ailleurs (claude.ai, API), la skill est dépliée dans un dossier du conteneur : `cible.py`

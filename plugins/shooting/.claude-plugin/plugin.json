@@ -1,0 +1,19 @@
+{
+  "name": "shooting",
+  "version": "1.1.0",
+  "description": "Outils pour le tir sportif. Aujourd'hui : l'analyse d'une photo de carton (ISSF 10 m / 25 m / 50 m) — nouveaux impacts, score, groupement, suivi de seance.",
+  "author": {
+    "name": "Hadrien Croubois"
+  },
+  "repository": "https://github.com/Amxx/skills",
+  "homepage": "https://github.com/Amxx/skills/tree/master/plugins/shooting",
+  "license": "MIT",
+  "keywords": [
+    "shooting",
+    "tir",
+    "issf",
+    "vision",
+    "photo",
+    "sport"
+  ]
+}
