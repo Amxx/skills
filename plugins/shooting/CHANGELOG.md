@@ -1,5 +1,26 @@
 # Journal des versions
 
+## 1.3.2 — 19/09/2026
+
+Correction de fiche, en deux temps. La 1.3.0 disait de « coller le SVG dans l'outil de
+rendu inline » sans dire que c'était un **appel d'outil** : le calque s'affichait en bloc
+de code au lieu d'une image. Et le repli en artefact, une fois écrit, ne marchait pas.
+Le moteur ne bouge pas.
+
+- **Le § 7 nomme le mécanisme** et donne une cascade : outil de rendu visuel s'il existe,
+  sinon artefact, sinon retour au PNG — avec l'interdiction explicite de coller le SVG
+  dans la réponse quand rien ne le rend.
+- **Contrôle après envoi** : si le calque apparaît en balises, c'est le troisième cas,
+  reprendre en PNG et le dire.
+- **`svg` sait sortir une page HTML autonome** : une sortie en `.html` emballe le calque
+  avec ses propres variables de thème et son mode sombre. Hors de l'outil de rendu inline,
+  `var(--b)` et `var(--t)` ne sont définis nulle part — les anneaux seraient partis en noir
+  sur fond noir. Un `.svg` nu n'est de toute façon pas publiable en artefact.
+- **Le calque dessine son carton.** Le papier est une couleur physique au même titre que
+  le noir du visuel : sans lui, le visuel tombait sur le fond du fil, à 1,04:1 en thème
+  sombre — invisible. Anneaux et anciens impacts passent donc en encre fixe, et seule la
+  légende, écrite hors du carton, suit encore le thème.
+
 ## 1.3.1 — 19/09/2026
 
 - **Les scores du calque passent à la couleur de leur série** — le rouge des impacts sur le

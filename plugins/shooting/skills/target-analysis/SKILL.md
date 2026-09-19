@@ -193,7 +193,15 @@ Quand une série est bonne sauf deux coups très à l'extérieur, le dire ainsi 
 python3 <CIBLE> svg ~/tir/etat.json
 ```
 
-La commande écrit un `<svg>` autonome sur la sortie standard. Le **coller tel quel** dans l'outil de rendu inline de la conversation : le tireur voit le calque dans le fil, sans fichier à ouvrir — sur téléphone, c'est la différence entre un coup d'œil et trois manipulations. Le SVG suit le thème clair/sombre, ce que le PNG ne faisait pas.
+La commande écrit un `<svg>` autonome sur la sortie standard. Ce SVG **n'est pas du texte à recopier dans la réponse** : collé dans un message, il s'affiche en bloc de code, pas en image. Il doit être passé **en argument à un outil qui le rend**.
+
+Dans l'ordre :
+
+1. **Un outil de rendu visuel est disponible** — claude.ai et l'application mobile en exposent un, reconnaissable à sa description : widget, visuel inline, SVG. L'appeler avec le SVG **entier** comme code du widget. C'est le chemin nominal : le tireur voit le calque dans le fil, sans fichier à ouvrir. Le carton est dessiné dans le SVG, papier compris, donc il se lit en thème clair comme en sombre ; seule la légende suit le thème.
+2. **Sinon, un mécanisme d'artefact** : donner à la commande une sortie en `.html` — `python3 <CIBLE> svg ~/tir/etat.json ~/tir/calque.html` — et publier ce fichier. L'emballage est obligatoire : hors de l'outil de rendu, `var(--b)`, `var(--t)` et la classe `ts` n'existent pas, et le calque sortirait avec des anneaux noirs sur fond noir. Un `.svg` nu n'est de toute façon pas publiable en artefact.
+3. **Sinon** — Claude Code en terminal, API sans rendu — l'affichage inline n'existe pas. Repasser au PNG (`overlay`, puis envoi du fichier) et le dire en une ligne. Ne jamais coller le SVG dans la réponse « au cas où » : ça produit trente lignes de balises illisibles à la place du calque.
+
+Après coup, vérifier que le calque s'affiche bien **comme une image**. S'il apparaît en bloc de code, c'est le cas 3 : reprendre en PNG.
 
 Ne pas recomposer le SVG à la main depuis les coordonnées : la commande le fait depuis `etat.json`, et une transposition manuelle y glisserait une erreur invisible — même raison qu'au § 0 pour le moteur.
 

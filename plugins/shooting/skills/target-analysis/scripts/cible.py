@@ -451,19 +451,42 @@ def zoom(src, x0, y0, x1, y1, f, out):
     im.resize((im.width*f, im.height*f), Image.LANCZOS).save(out)
     print(json.dumps({"out": out, "origine": [x0, y0], "facteur": f}))
 
+PAGE = """<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calque</title>
+<style>
+:root { --b:#c9c7bd; --t:#73726c; --fond:#fdfdfb;
+        box-sizing:border-box; padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+        --b:#4a4944; --t:#9c9a92; --fond:#1f1e1c; } }
+:root[data-theme="dark"] { --b:#4a4944; --t:#9c9a92; --fond:#1f1e1c; }
+html,body { height:100%%; margin:0; background:var(--fond); }
+body { display:flex; align-items:center; justify-content:center; padding:12px; }
+svg { width:100%%; max-width:680px; height:auto; }
+.ts { font:12px system-ui,sans-serif; fill:var(--t); }
+</style>
+%s
+"""
+
 COULEURS = ["#D85A30", "#1D9E75", "#378ADD", "#BA7517", "#7F77DD"]
 
 def svg(etat_path, out=None, mode="derniere"):
     """Calque vectoriel destine au rendu INLINE dans la conversation, pas a un fichier
        image. Sort un <svg> autonome : espace de noms declare (il s'ouvre donc aussi
-       tel quel dans un navigateur), viewBox 680 de large, fond transparent, traits
-       d'anneaux en var(--b) et legende en class ts pour suivre le theme clair/sombre,
-       chaque var() doublee d'un repli en dur pour le rendu hors conversation.
-       Le noir du visuel, les impacts et les scores restent en dur : ce sont des couleurs
-       physiques, elles ne doivent pas s'inverser en mode sombre. Le score prend la couleur
-       de sa serie, seule lisible aussi bien sur le noir du visuel que sur le beige.
+       tel quel dans un navigateur), viewBox 680 de large, et le carton dessine dedans.
+       Le papier, le noir du visuel, les traits d'anneaux, les impacts et les scores sont
+       des couleurs physiques, en dur : elles ne s'inversent pas en mode sombre. Sans le
+       papier, le noir du visuel tombait sur le fond du fil — 1,04:1 en theme sombre,
+       donc invisible. Seule la legende, ecrite hors du carton, suit le theme
+       (class ts, var(--t) avec repli en dur).
+       Le score prend la couleur de sa serie, seule lisible aussi bien sur le noir du
+       visuel que sur le papier.
        mode derniere = la serie courante en plein, les precedentes en cercles gris.
-       mode toutes   = une couleur par serie, pour le recapitulatif de fin de seance."""
+       mode toutes   = une couleur par serie, pour le recapitulatif de fin de seance.
+       Un chemin de sortie en .html emballe le SVG dans une page autonome : hors de
+       l'outil de rendu inline, var(--b), var(--t) et la classe ts n'existent pas et
+       les traits d'anneaux partiraient en noir. C'est la forme publiable en artefact."""
     from xml.sax.saxutils import escape as esc
     e = json.load(open(etat_path))
     r10, pas = e["r10_mm"], e["pas_mm"]; cal = e.get("calibre_mm", 4.5)
@@ -473,10 +496,12 @@ def svg(etat_path, out=None, mode="derniere"):
     cx, cy, R = 340, 250, 210.0
     s = R/rmax; rp = cal/2*s
     px = lambda X, Y: (cx + X*s, cy - Y*s)
-    L = ['<circle cx="%d" cy="%d" r="%.1f" fill="#1a1a1a"/>' % (cx, cy, noir*s)]
+    L = ['<rect x="%d" y="%d" width="%d" height="%d" rx="8" fill="#fdfdfb" '
+         'stroke="#e3e1d9"/>' % (cx-230, cy-230, 460, 460),
+         '<circle cx="%d" cy="%d" r="%.1f" fill="#1a1a1a"/>' % (cx, cy, noir*s)]
     for k in range(nmax, 0, -1):
         r = (r10 + (nmax-k)*pas)*s
-        col = "#ffffff" if r <= noir*s - .5 else "var(--b, #3a3a3a)"
+        col = "#ffffff" if r <= noir*s - .5 else "#3a3a3a"
         L.append('<circle cx="%d" cy="%d" r="%.1f" fill="none" stroke="%s" stroke-width="0.5"/>'
                  % (cx, cy, r, col))
     legende = []
@@ -496,7 +521,7 @@ def svg(etat_path, out=None, mode="derniere"):
             else:
                 gris = mode != "toutes"
                 L.append('<circle cx="%.1f" cy="%.1f" r="%.1f" fill="none" stroke="%s" '
-                         'stroke-width="1.2"/>' % (a, b, rp, "var(--t, #7a8a99)" if gris else col))
+                         'stroke-width="1.2"/>' % (a, b, rp, "#7a8a99" if gris else col))
         if ser["impacts"] and (mode == "toutes" or derniere):
             n = len(ser["impacts"])
             a, b = px(sum(i["x"] for i in ser["impacts"])/n, sum(i["y"] for i in ser["impacts"])/n)
@@ -520,6 +545,8 @@ def svg(etat_path, out=None, mode="derniere"):
     doc = ('<svg xmlns="http://www.w3.org/2000/svg" width="100%%" viewBox="0 0 680 %d" '
            'role="img"><title>%s</title><desc>%s</desc>\n%s\n</svg>'
            ) % (H, esc(str(e.get("cible", "cible"))), esc(desc), "\n".join(L))
+    if out and out.endswith(".html"):
+        doc = PAGE % doc
     if out and out != "-": open(out, "w").write(doc); print(out)
     else: print(doc)
 
