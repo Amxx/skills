@@ -1,5 +1,27 @@
 # Journal des versions
 
+## 1.2.0 — 19/09/2026
+
+Rien ne change à la lecture des cartons : les chiffres de la 1.1.0 tiennent toujours.
+Cette version ne touche qu'à la distribution et au rangement.
+
+- **Plugin Claude Code installable.** Le dépôt est devenu un marketplace :
+  `/plugin marketplace add Amxx/skills` puis `/plugin install shooting@amxx`. La copie
+  manuelle dans `~/.claude/skills/` reste possible, et l'import sur claude.ai aussi.
+- **Renommage — à relire si vous aviez déjà la version 1.1.0.** Le plugin s'appelle
+  `shooting` (le domaine) et la skill `target-analysis` (ce qu'elle fait), là où `tir`
+  désignait les deux. Conséquences : `tir@amxx` devient `shooting@amxx` et demande une
+  réinstallation, et sur claude.ai le nouvel import crée une *seconde* skill à côté de
+  l'ancienne — supprimer `tir` à la main après coup. La commande de forçage devient
+  `/target-analysis`.
+- **Le script sort de la fiche.** Le moteur ne vit plus dans un bloc de code de
+  `SKILL.md` mais dans `skills/target-analysis/scripts/cible.py`, livré avec la skill et
+  exécuté tel quel. La fiche passe de 723 à 234 lignes, et surtout Claude ne recopie plus
+  500 lignes de calcul numérique à la main : une erreur de transcription y était invisible.
+- **Archives publiées.** `shooting.skill` n'est plus versionné dans le dépôt ; chaque
+  release porte `shooting.skill` et `shooting.zip` — le même fichier, l'extension `.zip`
+  étant celle qu'attend l'import de skill sur claude.ai.
+
 ## 1.1.0 — 19/09/2026
 
 Traitement ramené de plus de 5 minutes par carton à 6-15 secondes, et détection
