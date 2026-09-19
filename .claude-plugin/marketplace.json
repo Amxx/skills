@@ -1,0 +1,14 @@
+{
+  "name": "amxx",
+  "description": "Plugins Claude Code de Hadrien Croubois.",
+  "owner": {
+    "name": "Hadrien Croubois"
+  },
+  "plugins": [
+    {
+      "name": "tir",
+      "source": "./plugins/tir",
+      "description": "Analyse une photo de carton de tir (ISSF 10 m / 25 m / 50 m) : distingue les nouveaux impacts des anciens, score la serie, mesure le groupement et suit la seance."
+    }
+  ]
+}

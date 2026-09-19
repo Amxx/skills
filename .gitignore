@@ -1,0 +1,4 @@
+# artefacts de construction : tout est reconstructible depuis les sources
+*.skill
+**/tests/sortie/
+__pycache__/

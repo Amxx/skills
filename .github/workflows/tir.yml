@@ -1,0 +1,20 @@
+name: tir
+on:
+  push:
+    paths: ['plugins/tir/**', '.claude-plugin/marketplace.json', '.github/workflows/tir.yml']
+  pull_request:
+    paths: ['plugins/tir/**', '.claude-plugin/marketplace.json', '.github/workflows/tir.yml']
+defaults:
+  run:
+    working-directory: plugins/tir
+jobs:
+  skill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: python3 scripts/verifier.py
+      - run: pip install pillow numpy scipy matplotlib
+      - run: python3 scripts/fumee.py
+      - run: ./scripts/build.sh

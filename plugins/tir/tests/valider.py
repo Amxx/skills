@@ -3,8 +3,7 @@
 import json, math, pathlib, subprocess, sys, time
 
 racine = pathlib.Path(__file__).resolve().parent.parent
-subprocess.run([sys.executable, str(racine / "scripts" / "extraire.py")], check=True)
-script = racine / "build" / "cible.py"
+script = racine / "skills" / "tir" / "scripts" / "cible.py"
 verite = json.loads((racine / "tests" / "verite.json").read_text(encoding="utf-8"))
 sortie = racine / "tests" / "sortie"; sortie.mkdir(exist_ok=True)
 etat = sortie / "etat.json"

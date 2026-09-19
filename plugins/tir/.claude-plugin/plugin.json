@@ -1,0 +1,12 @@
+{
+  "name": "tir",
+  "version": "1.1.0",
+  "description": "Analyse une photo de carton de tir (ISSF 10 m / 25 m / 50 m) : distingue les nouveaux impacts des anciens, score la serie, mesure le groupement et suit la seance.",
+  "author": {
+    "name": "Hadrien Croubois"
+  },
+  "repository": "https://github.com/Amxx/skills",
+  "homepage": "https://github.com/Amxx/skills/tree/master/plugins/tir",
+  "license": "MIT",
+  "keywords": ["tir", "issf", "vision", "photo", "sport"]
+}
