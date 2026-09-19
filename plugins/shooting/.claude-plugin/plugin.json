@@ -1,6 +1,6 @@
 {
   "name": "shooting",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Outils pour le tir sportif. Aujourd'hui : l'analyse d'une photo de carton (ISSF 10 m / 25 m / 50 m) — nouveaux impacts, score, groupement, suivi de seance.",
   "author": {
     "name": "Hadrien Croubois"

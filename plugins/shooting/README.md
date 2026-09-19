@@ -12,7 +12,7 @@ Le tireur envoie **une photo et rien d'autre**. Tout le reste est déduit : type
 - le score de la série, impact par impact, avec la marge à la ligne d'anneau la plus proche
 - le groupement : écart maximum, rayon moyen, écart-type par axe
 - la position du centre du groupe, comparée aux séries précédentes
-- un calque de la cible et une planche-contact pour vérifier la lecture
+- un calque de la cible rendu directement dans la conversation, sans fichier à ouvrir
 - un diagnostic qui distingue ce qui relève du réglage de l'arme et ce qui relève du geste
 
 ## Installation

@@ -451,6 +451,77 @@ def zoom(src, x0, y0, x1, y1, f, out):
     im.resize((im.width*f, im.height*f), Image.LANCZOS).save(out)
     print(json.dumps({"out": out, "origine": [x0, y0], "facteur": f}))
 
+COULEURS = ["#D85A30", "#1D9E75", "#378ADD", "#BA7517", "#7F77DD"]
+
+def svg(etat_path, out=None, mode="derniere"):
+    """Calque vectoriel destine au rendu INLINE dans la conversation, pas a un fichier
+       image. Sort un <svg> autonome : espace de noms declare (il s'ouvre donc aussi
+       tel quel dans un navigateur), viewBox 680 de large, fond transparent, traits
+       d'anneaux en var(--b) et texte en class ts pour suivre le theme clair/sombre,
+       chaque var() doublee d'un repli en dur pour le rendu hors conversation.
+       Le noir du visuel et les impacts restent en dur : ce sont des couleurs physiques,
+       elles ne doivent pas s'inverser en mode sombre.
+       mode derniere = la serie courante en plein, les precedentes en cercles gris.
+       mode toutes   = une couleur par serie, pour le recapitulatif de fin de seance."""
+    from xml.sax.saxutils import escape as esc
+    e = json.load(open(etat_path))
+    r10, pas = e["r10_mm"], e["pas_mm"]; cal = e.get("calibre_mm", 4.5)
+    noir = e.get("noir_mm", r10+3*pas); nmax = e.get("anneaux", 10)
+    rmax = r10 + (nmax-1)*pas
+    series = e.get("series", [])
+    cx, cy, R = 340, 250, 210.0
+    s = R/rmax; rp = cal/2*s
+    px = lambda X, Y: (cx + X*s, cy - Y*s)
+    L = ['<circle cx="%d" cy="%d" r="%.1f" fill="#1a1a1a"/>' % (cx, cy, noir*s)]
+    for k in range(nmax, 0, -1):
+        r = (r10 + (nmax-k)*pas)*s
+        col = "#ffffff" if r <= noir*s - .5 else "var(--b, #3a3a3a)"
+        L.append('<circle cx="%d" cy="%d" r="%.1f" fill="none" stroke="%s" stroke-width="0.5"/>'
+                 % (cx, cy, r, col))
+    legende = []
+    for i, ser in enumerate(series):
+        derniere = ser is series[-1]
+        if mode == "toutes":
+            col = COULEURS[i % len(COULEURS)]; plein, trace = False, True
+        else:
+            col = COULEURS[0]; plein, trace = derniere, True
+        if not trace: continue
+        for imp in ser["impacts"]:
+            a, b = px(imp["x"], imp["y"])
+            if plein:
+                L.append('<circle cx="%.1f" cy="%.1f" r="%.1f" fill="%s"/>' % (a, b, rp, col))
+                L.append('<text class="ts" font-size="11" fill="var(--t, #444444)" x="%.1f" y="%.1f">%s</text>'
+                         % (a+rp+2, b-rp-1, esc(str(imp.get("score", "")))))
+            else:
+                gris = mode != "toutes"
+                L.append('<circle cx="%.1f" cy="%.1f" r="%.1f" fill="none" stroke="%s" '
+                         'stroke-width="1.2"/>' % (a, b, rp, "var(--t, #7a8a99)" if gris else col))
+        if ser["impacts"] and (mode == "toutes" or derniere):
+            n = len(ser["impacts"])
+            a, b = px(sum(i["x"] for i in ser["impacts"])/n, sum(i["y"] for i in ser["impacts"])/n)
+            L.append('<path d="M%.1f %.1fH%.1fM%.1f %.1fV%.1f" stroke="%s" stroke-width="2.5" '
+                     'fill="none"/>' % (a-7, b, a+7, a, b-7, b+7, col))
+        if mode == "toutes":
+            tot = sum(i.get("score", 0) for i in ser["impacts"])
+            legende.append((col, "S%d : %d" % (i+1, tot)))
+    H = 500
+    if legende:
+        H = 524
+        x = 340 - (len(legende)*96)//2
+        for col, txt in legende:
+            L.append('<circle cx="%d" cy="492" r="5" fill="%s"/>' % (x, col))
+            L.append('<text class="ts" font-size="11" fill="var(--t, #444444)" x="%d" y="496">%s</text>' % (x+10, esc(txt)))
+            x += 96
+    nd_ = len(series[-1]["impacts"]) if series else 0
+    desc = ("Superposition des %d series de la seance." % len(series) if mode == "toutes"
+            else "Serie %d : %d impacts, les series precedentes en cercles gris."
+                 % (len(series), nd_))
+    doc = ('<svg xmlns="http://www.w3.org/2000/svg" width="100%%" viewBox="0 0 680 %d" '
+           'role="img"><title>%s</title><desc>%s</desc>\n%s\n</svg>'
+           ) % (H, esc(str(e.get("cible", "cible"))), esc(desc), "\n".join(L))
+    if out and out != "-": open(out, "w").write(doc); print(out)
+    else: print(doc)
+
 def overlay(etat_path, out):
     import matplotlib; matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -493,8 +564,10 @@ if __name__ == "__main__":
     if cmd == "tiles":     tiles(sys.argv[2], sys.argv[3])
     elif cmd == "zoom":    zoom(sys.argv[2], *[int(v) for v in sys.argv[3:8]], sys.argv[8])
     elif cmd == "overlay": overlay(sys.argv[2], sys.argv[3])
+    elif cmd == "svg":     svg(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None,
+                               sys.argv[4] if len(sys.argv) > 4 else "derniere")
     elif cmd == "analyse":
         r, p, b, e = analyser(sys.argv[2], sys.argv[3], sys.argv[4] if len(sys.argv) > 4 else ".",
                               int(sys.argv[5]) if len(sys.argv) > 5 else None)
         print(json.dumps(r, indent=1))
-    else: raise SystemExit("commandes : tiles | zoom | analyse | overlay")
+    else: raise SystemExit("commandes : tiles | zoom | analyse | svg | overlay")

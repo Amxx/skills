@@ -13,8 +13,8 @@ spec = importlib.util.spec_from_file_location("cible", engine)
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)          # __name__ != "__main__": the CLI stays put
 
-missing = [n for n in ("analyser", "overlay", "zoom", "tiles")
+missing = [n for n in ("analyser", "overlay", "svg", "zoom", "tiles")
            if not callable(getattr(module, n, None))]
 if missing:
     sys.exit("FAIL: functions missing from cible.py — " + ", ".join(missing))
-print(f"OK — {engine.name} imports and exposes analyser, overlay, zoom, tiles")
+print(f"OK — {engine.name} imports and exposes analyser, overlay, svg, zoom, tiles")

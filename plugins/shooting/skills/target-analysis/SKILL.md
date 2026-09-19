@@ -185,15 +185,21 @@ Un groupe **serré mais décalé** est un problème de réglage d'arme, pas de t
 
 Quand une série est bonne sauf deux coups très à l'extérieur, le dire ainsi : donner le groupe sans eux, et regarder s'ils partagent une dérive ou une hauteur — deux coups à la même dérive et opposés en hauteur désignent l'élévation.
 
-### 7. Calque et envoi
+### 7. Calque — rendu dans la conversation, pas en fichier
 
 Écrire `etat.json`, puis :
 
 ```bash
-python3 <CIBLE> overlay ~/tir/etat.json ~/tir/calque.png
+python3 <CIBLE> svg ~/tir/etat.json
 ```
 
-Parcourir le calque **impact par impact** dans l'ordre horaire, et dans les deux sens : photo → calque rattrape les oublis, calque → photo rattrape les inventions. Puis envoyer `calque.png` avec `SendUserFile` : sur téléphone, c'est le moyen le plus rapide de vérifier d'un coup d'œil.
+La commande écrit un `<svg>` autonome sur la sortie standard. Le **coller tel quel** dans l'outil de rendu inline de la conversation : le tireur voit le calque dans le fil, sans fichier à ouvrir — sur téléphone, c'est la différence entre un coup d'œil et trois manipulations. Le SVG suit le thème clair/sombre, ce que le PNG ne faisait pas.
+
+Ne pas recomposer le SVG à la main depuis les coordonnées : la commande le fait depuis `etat.json`, et une transposition manuelle y glisserait une erreur invisible — même raison qu'au § 0 pour le moteur.
+
+Avant de l'envoyer, parcourir le calque **impact par impact** dans l'ordre horaire, et dans les deux sens : photo → calque rattrape les oublis, calque → photo rattrape les inventions.
+
+`overlay` produit le même calque en PNG et reste disponible pour qui veut archiver un fichier, mais ce n'est plus le chemin nominal. La **planche-contact ne part jamais au tireur** : c'est un outil de vérification interne, à ne montrer que pour justifier une lecture contestée.
 
 ### 8. Répondre — court
 
@@ -208,6 +214,14 @@ Séance : 3 séries, 127/150, groupe moyen 31 mm (−6 mm depuis la série 1)
 ```
 
 À partir de la 3ᵉ série, une ligne de tendance. En fin de séance, proposer un récapitulatif graphique — pas avant.
+
+Ce récapitulatif se fait lui aussi **sans image** : la superposition des séries par
+
+```bash
+python3 <CIBLE> svg ~/tir/etat.json - toutes
+```
+
+— une couleur par série, le score de chacune en légende — rendue inline comme le calque ; et les courbes de score et de groupement par le graphe natif de la conversation plutôt que par une figure matplotlib.
 
 ## Honnêteté
 

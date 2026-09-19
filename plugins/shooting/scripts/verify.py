@@ -42,7 +42,7 @@ else:
         ast.parse(code)
     except SyntaxError as e:
         errors.append(f"cible.py syntax: line {e.lineno} — {e.msg}")
-    for cmd in ("analyse", "overlay", "zoom", "tiles"):
+    for cmd in ("analyse", "overlay", "svg", "zoom", "tiles"):
         if f'"{cmd}"' not in code:
             errors.append(f"command {cmd} missing from cible.py")
 

@@ -1,5 +1,24 @@
 # Journal des versions
 
+## 1.3.0 — 19/09/2026
+
+Les résultats s'affichent dans la conversation au lieu d'être livrés en fichier. Le moteur
+d'analyse ne bouge pas : les chiffres de détection de la 1.1.0 tiennent toujours.
+
+- **Nouvelle commande `svg`.** Elle produit le calque en SVG autonome sur la sortie standard,
+  à rendre inline dans le fil. Sur téléphone, ouvrir un PNG demandait trois manipulations pour
+  voir ce qu'un coup d'œil suffit à vérifier. Le SVG suit en prime le thème clair/sombre.
+- **Le calque ne passe plus par matplotlib** sur le chemin nominal : il est construit depuis
+  les coordonnées déjà présentes dans `etat.json`, donc sans rendu d'image ni écriture disque.
+  `overlay` reste là pour qui veut archiver un PNG.
+- **Récapitulatif de séance sans image** : `svg … - toutes` superpose les séries, une couleur
+  par série, et les courbes passent par le graphe natif de la conversation.
+- **La planche-contact est explicitement interne.** La fiche disait de la lire, pas de ne pas
+  l'envoyer ; elle ne sert qu'à la vérification et n'a rien à faire chez le tireur.
+- **Le calque tient debout hors de la conversation** : espace de noms déclaré, repli de
+  couleur en dur derrière chaque variable de thème, titre et description échappés. Le fichier
+  produit par `svg etat.json calque.svg` s'ouvre donc tel quel dans un navigateur.
+
 ## 1.2.1 — 19/09/2026
 
 Correction de fiche : le moteur ne bouge pas, les chiffres de détection de la 1.1.0 non plus.
