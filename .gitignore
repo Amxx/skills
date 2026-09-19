@@ -2,3 +2,4 @@
 *.skill
 **/tests/sortie/
 __pycache__/
+dist/

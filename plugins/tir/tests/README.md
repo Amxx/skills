@@ -2,7 +2,7 @@
 
 Les photos de cartons ne sont pas versionnées : déposer les siennes dans `tests/cartons/`.
 
-`valider.py` rejoue une séance complète et compare la détection à une vérité établie
+`validate.py` rejoue une séance complète et compare la détection à une vérité établie
 à la main. Il mesure ce qui compte vraiment : le nombre d'impacts justes, le nombre de
 faux positifs, et le temps.
 
@@ -28,7 +28,7 @@ faux positifs, et le temps.
 3. Lancer :
 
 ```bash
-python3 tests/valider.py
+python3 tests/validate.py
 ```
 
 Un impact est compté juste s'il tombe à moins de 2,5 mm de sa position vraie.

@@ -84,8 +84,8 @@ La skill tient en deux fichiers, chacun source unique de son côté :
   fiche reste courte au lieu de traîner 500 lignes de Python dans le contexte.
 
 ```bash
-./scripts/verifier.py        # manifestes, frontmatter, syntaxe de cible.py, commandes
-./scripts/fumee.py           # cible.py s'importe vraiment et expose ses quatre commandes
+./scripts/verify.py          # manifestes, frontmatter, syntaxe de cible.py, commandes
+./scripts/smoke.py           # cible.py s'importe vraiment et expose ses quatre commandes
 ./scripts/build.sh           # vérifie puis produit tir.skill
 ```
 

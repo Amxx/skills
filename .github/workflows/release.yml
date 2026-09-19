@@ -1,0 +1,75 @@
+name: release
+
+# Two entry points: a <plugin>--v<version> tag (what `claude plugin tag` produces),
+# or a manual run naming the plugin.
+on:
+  push:
+    tags: ['*--v*']
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: "directory name under plugins/"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+
+      # Inputs travel through the environment, never interpolated into the script:
+      # a ${{ }} pasted into shell is an injection.
+      - name: Resolve plugin and expected version
+        id: target
+        env:
+          INPUT_PLUGIN: ${{ inputs.plugin }}
+          TAG: ${{ github.ref_name }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT" = workflow_dispatch ]; then
+            name="$INPUT_PLUGIN"; expected=""
+          else
+            name="${TAG%%--v*}"; expected="${TAG#*--v}"
+          fi
+          echo "name=$name"         >> "$GITHUB_OUTPUT"
+          echo "expected=$expected" >> "$GITHUB_OUTPUT"
+
+      - name: Build archive and release notes
+        env:
+          NAME: ${{ steps.target.outputs.name }}
+          EXPECTED: ${{ steps.target.outputs.expected }}
+        run: python3 scripts/package.py "$NAME" ${EXPECTED:+"$EXPECTED"}
+
+      # Never publish an archive whose engine does not import.
+      - name: Smoke test, if the plugin has one
+        env:
+          NAME: ${{ steps.target.outputs.name }}
+        run: |
+          set -euo pipefail
+          smoke="plugins/$NAME/scripts/smoke.py"
+          if [ -f "$smoke" ]; then
+            pip install --quiet pillow numpy scipy matplotlib
+            (cd "plugins/$NAME" && python3 scripts/smoke.py)
+          else
+            echo "no $smoke — step skipped"
+          fi
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: ${{ steps.target.outputs.name }}
+        run: |
+          set -euo pipefail
+          version="$(cat dist/version.txt)"
+          tag="$NAME--v$version"
+          gh release create "$tag" \
+            "dist/$NAME.skill" "dist/$NAME.zip" \
+            --title "$NAME $version" \
+            --notes-file dist/notes.md
